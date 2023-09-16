@@ -1,14 +1,12 @@
 FROM alpine:3.15 as builder
 
-RUN apk add --update --no-cache nodejs && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
-
-# # 指定工作目录
+# 指定工作目录
 WORKDIR /app
 
 # COPY ./dist /app/dist
 COPY . /app
 
-RUN source $HOME/.shrc &&  pnpm install && pnpm build
+RUN apk add --update --no-cache nodejs npm && npm install -g pnpm && pnpm install && pnpm build
 
 FROM nginx:latest
 COPY --from=builder /app/dist /app/dist
