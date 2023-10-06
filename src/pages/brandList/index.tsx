@@ -1,6 +1,7 @@
-import { brand } from '@/services/ant-design-pro/brand';
-import { useAntdTable } from 'ahooks';
-import { Table } from 'antd';
+import { brand, addBrand } from '@/services/ant-design-pro/brand';
+import { useAntdTable, useBoolean } from 'ahooks';
+import { Table, Space, Modal, Form, Input } from 'antd';
+import Button from 'antd/es/button';
 import dayjs from 'dayjs';
 
 interface Result {
@@ -15,11 +16,16 @@ const getTableData = ({
   current: number;
   pageSize: number;
 }): Promise<Result> => {
-  return brand({ current, pageSize }).then((res) => ({ total: 0, list: res as any }));
+  return brand({ pageNo: current, pageSize }).then((res) => {
+    return { total: res.data.total, list: res.data.result as any };
+  });
 };
 
 const BrandList = () => {
-  const { tableProps } = useAntdTable(getTableData);
+  const { tableProps, refresh } = useAntdTable(getTableData);
+  const [form] = Form.useForm();
+  const [modalState, { toggle }] = useBoolean(false);
+
   const columns = [
     { title: '名称', dataIndex: 'brandName' },
     { title: '品牌描述', dataIndex: 'brandDesc' },
@@ -38,9 +44,34 @@ const BrandList = () => {
       },
     },
   ];
+
+  const onOk = () => {
+    form.validateFields().then((values) => {
+      console.log(values);
+      addBrand({ ...values });
+      toggle();
+      refresh();
+      form.setFieldsValue(null);
+    });
+  };
   return (
     <>
-      <Table {...tableProps} columns={columns} />
+      <Space direction="vertical">
+        <Button type="primary" onClick={() => toggle()}>
+          新增品牌
+        </Button>
+        <Table {...tableProps} columns={columns} rowKey="id" />
+        <Modal title="新增品牌" open={modalState} onOk={onOk} onCancel={() => toggle()}>
+          <Form form={form}>
+            <Form.Item name="brandName" label="品牌名称" required rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item name="brandDesc" label="品牌描述" required rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+          </Form>
+        </Modal>
+      </Space>
     </>
   );
 };
