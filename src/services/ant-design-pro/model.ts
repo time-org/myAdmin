@@ -1,10 +1,10 @@
 import { request } from '@umijs/max';
 
-export async function brand(params: any, options?: any) {
+export async function model(params: any, options?: any) {
   return request<{
     total: number;
     result: any;
-  }>('/api/brand', {
+  }>('/api/model', {
     method: 'GET',
     params: {
       ...params,

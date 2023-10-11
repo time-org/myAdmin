@@ -98,4 +98,14 @@ declare namespace API {
     description?: string;
     type?: NoticeIconItemType;
   };
+
+  type BrandList = {
+    result: BrandListItem[];
+    total: number;
+  };
+
+  type BrandListItem = {
+    id: string;
+    brandName: string;
+  };
 }

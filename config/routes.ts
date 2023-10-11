@@ -58,6 +58,12 @@ export default [
     component: './brandList',
   },
   {
+    name: 'list.shop-model-list',
+    icon: 'table',
+    path: '/shop-model',
+    component: './shopModelList',
+  },
+  {
     path: '/',
     redirect: '/welcome',
   },
