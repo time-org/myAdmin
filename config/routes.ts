@@ -58,6 +58,18 @@ export default [
     component: './brandList',
   },
   {
+    name: 'list.user-list',
+    icon: 'table',
+    path: '/user/list',
+    component: './User/List',
+  },
+  {
+    name: 'list.series-list',
+    icon: 'table',
+    path: '/series',
+    component: './seriesList',
+  },
+  {
     name: 'list.shop-model-list',
     icon: 'table',
     path: '/shop-model',

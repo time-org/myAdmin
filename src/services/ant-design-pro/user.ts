@@ -1,10 +1,10 @@
 import { request } from '@umijs/max';
 
-export async function model(params: any, options?: any) {
+export async function user(params: any, options?: any) {
   return request<{
     total: number;
     result: any;
-  }>('/api/model', {
+  }>('/api/user', {
     method: 'GET',
     params: {
       ...params,
@@ -13,8 +13,8 @@ export async function model(params: any, options?: any) {
   });
 }
 
-export async function addModel(data?: any) {
-  return request('/api/model', {
+export async function addBrand(data?: any) {
+  return request('/api/brand', {
     method: 'POST',
     data,
   });
