@@ -1,5 +1,5 @@
 import { brandList } from '@/services/ant-design-pro/brand';
-import { addSeries, series } from '@/services/ant-design-pro/series';
+import { addSeries, series, updateSeries } from '@/services/ant-design-pro/series';
 import { useAntdTable, useBoolean, useRequest } from 'ahooks';
 import { Form, Input, Modal, Select, Space, Table, message } from 'antd';
 import Button from 'antd/es/button';
@@ -28,6 +28,7 @@ const SeriesList = () => {
   const [form] = Form.useForm();
   const [modalState, { toggle }] = useBoolean(false);
   const [options, setOptions] = useState();
+  const [id, setId] = useState<number | undefined>(undefined);
   const { runAsync } = useRequest(brandList, { manual: true });
 
   const columns = [
@@ -47,18 +48,42 @@ const SeriesList = () => {
         return dayjs(value).format('YYYY-MM-DD HH:mm');
       },
     },
+    {
+      title: '操作',
+      dataIndex: 'id',
+      render: (id: number) => {
+        return (
+          <>
+            <Button
+              type="link"
+              onClick={() => {
+                setId(id);
+                toggle();
+              }}
+            >
+              更新
+            </Button>
+          </>
+        );
+      },
+    },
   ];
 
   const onOk = async () => {
     const values = await form.validateFields();
-    addSeries({ ...values })
-      .then(() => {
-        message.success('新增成功');
+    try {
+      if (id) {
+        await updateSeries({ id, ...values });
+      } else {
+        await addSeries({ ...values });
+        message.success(id ? '更新成功' : '新增成功');
         toggle();
         refresh();
         form.resetFields();
-      })
-      .catch((error) => message.error(error.message));
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
   };
   return (
     <>

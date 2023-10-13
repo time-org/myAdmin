@@ -28,3 +28,10 @@ export async function addSeries(data?: any) {
     data,
   });
 }
+
+export async function updateSeries(data?: any) {
+  return request('/api/series', {
+    method: 'PATCH',
+    data,
+  });
+}
