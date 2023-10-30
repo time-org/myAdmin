@@ -62,7 +62,7 @@ const SeriesList = () => {
           新增系列
         </Button>
         <Table {...tableProps} columns={columns} rowKey="id" scroll={{ x: 'max' }} />
-        <Modal title="新增品牌" open={modalState} onOk={onOk} onCancel={() => toggle()}>
+        <Modal title="新增系列" open={modalState} onOk={onOk} onCancel={() => toggle()}>
           <Form form={form}>
             <Form.Item name="seriesName" label="系列名称" required rules={[{ required: true }]}>
               <Input />

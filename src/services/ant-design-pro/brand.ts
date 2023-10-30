@@ -13,6 +13,15 @@ export async function brand(params: any, options?: any) {
   });
 }
 
+export async function brandList(params: any) {
+  return request('/api/brand/list', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
 export async function addBrand(data?: any) {
   return request('/api/brand', {
     method: 'POST',

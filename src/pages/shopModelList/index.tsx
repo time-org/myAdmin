@@ -1,6 +1,19 @@
+import { brandList } from '@/services/ant-design-pro/brand';
 import { addModel, model } from '@/services/ant-design-pro/model';
-import { useAntdTable, useBoolean } from 'ahooks';
-import { DatePicker, Form, Input, Modal, Space, Switch, Table, message } from 'antd';
+import { seriesList } from '@/services/ant-design-pro/series';
+import { useAntdTable, useBoolean, useRequest } from 'ahooks';
+import {
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  Space,
+  Switch,
+  Table,
+  message,
+} from 'antd';
 import Button from 'antd/es/button';
 import dayjs from 'dayjs';
 
@@ -26,10 +39,14 @@ const BrandList = () => {
   const [form] = Form.useForm();
   const [modalState, { toggle }] = useBoolean(false);
 
+  const { data } = useRequest(brandList);
+  const { data: seriesData } = useRequest(seriesList);
+
   const columns = [
     { title: '名称', dataIndex: 'modelName' },
-    { title: '品牌描述', dataIndex: 'modelDesc' },
+    { title: '模型描述', dataIndex: 'modelDesc' },
     { title: '品牌比例', dataIndex: 'rate' },
+    { title: '品牌名称', dataIndex: 'brandName' },
     { title: '长', dataIndex: 'modelLength' },
     { title: '宽', dataIndex: 'modelWidth' },
     { title: '高', dataIndex: 'modelHeight' },
@@ -63,6 +80,18 @@ const BrandList = () => {
         return dayjs(value).format('YYYY-MM-DD HH:mm');
       },
     },
+    {
+      title: '操作',
+      dataIndex: 'op',
+      fixed: 'right',
+      render: () => {
+        return (
+          <Space>
+            <Button type="link">更新模型</Button>
+          </Space>
+        );
+      },
+    },
   ];
 
   const onOk = async () => {
@@ -82,8 +111,14 @@ const BrandList = () => {
         <Button type="primary" onClick={() => toggle()}>
           新增模型
         </Button>
-        <Table {...tableProps} columns={columns} rowKey="id" scroll={{ x: 'max' }} />
-        <Modal title="新增品牌" open={modalState} onOk={onOk} onCancel={() => toggle()}>
+        <Table {...tableProps} columns={columns} rowKey="id" scroll={{ x: 'max-content' }} />
+        <Modal
+          title="新增品牌"
+          open={modalState}
+          onOk={onOk}
+          onCancel={() => toggle()}
+          width="700px"
+        >
           <Form form={form}>
             <Form.Item name="modelName" label="模型名称" required rules={[{ required: true }]}>
               <Input />
@@ -91,24 +126,29 @@ const BrandList = () => {
             <Form.Item name="modelDesc" label="模型描述" required rules={[{ required: true }]}>
               <Input />
             </Form.Item>
+            <Form.Item name="brandId" label="品牌" required rules={[{ required: true }]}>
+              <Select options={data?.data} />
+            </Form.Item>
             <Form.Item name="series" label="系列" required rules={[{ required: true }]}>
-              <Input />
+              <Select options={seriesData?.data} />
             </Form.Item>
             <Form.Item name="rate" label="品牌比例" required rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item name="modelLength" label="长">
-              <Input />
-            </Form.Item>
-            <Form.Item name="modelWidth" label="宽">
-              <Input />
-            </Form.Item>
-            <Form.Item name="modelHeight" label="高">
-              <Input />
-            </Form.Item>
-            <Form.Item name="modelWeight" label="重量">
-              <Input />
-            </Form.Item>
+            <Space>
+              <Form.Item name="modelLength" label="尺寸信息" required rules={[{ required: true }]}>
+                <InputNumber addonBefore="长" />
+              </Form.Item>
+              <Form.Item name="modelWidth" required rules={[{ required: true }]}>
+                <InputNumber addonBefore="宽" />
+              </Form.Item>
+              <Form.Item name="modelHeight" required rules={[{ required: true }]}>
+                <InputNumber addonBefore="高" />
+              </Form.Item>
+              <Form.Item name="modelWeight">
+                <InputNumber addonBefore="重" />
+              </Form.Item>
+            </Space>
             <Form.Item name="publishTime" label="发布时间">
               <DatePicker showTime />
             </Form.Item>

@@ -13,6 +13,15 @@ export async function series(params: any, options?: any) {
   });
 }
 
+export async function seriesList(params: any) {
+  return request('/api/series/list', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
 export async function addSeries(data?: any) {
   return request('/api/series', {
     method: 'POST',
