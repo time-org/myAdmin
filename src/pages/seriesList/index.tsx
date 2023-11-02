@@ -1,8 +1,10 @@
+import { brandList } from '@/services/ant-design-pro/brand';
 import { addSeries, series } from '@/services/ant-design-pro/series';
-import { useAntdTable, useBoolean } from 'ahooks';
-import { Form, Input, Modal, Space, Table, message } from 'antd';
+import { useAntdTable, useBoolean, useRequest } from 'ahooks';
+import { Form, Input, Modal, Select, Space, Table, message } from 'antd';
 import Button from 'antd/es/button';
 import dayjs from 'dayjs';
+import { useState } from 'react';
 
 interface Result {
   total: number;
@@ -25,9 +27,12 @@ const SeriesList = () => {
   const { tableProps, refresh } = useAntdTable(getTableData);
   const [form] = Form.useForm();
   const [modalState, { toggle }] = useBoolean(false);
+  const [options, setOptions] = useState();
+  const { runAsync } = useRequest(brandList, { manual: true });
 
   const columns = [
     { title: '名称', dataIndex: 'seriesName' },
+    { title: '品牌名称', dataIndex: 'brandName' },
     {
       title: '创建时间',
       dataIndex: 'createdAt',
@@ -58,14 +63,31 @@ const SeriesList = () => {
   return (
     <>
       <Space direction="vertical">
-        <Button type="primary" onClick={() => toggle()}>
+        <Button
+          type="primary"
+          onClick={async () => {
+            const data = await runAsync({});
+            setOptions(data);
+            toggle();
+          }}
+        >
           新增系列
         </Button>
         <Table {...tableProps} columns={columns} rowKey="id" scroll={{ x: 'max' }} />
-        <Modal title="新增系列" open={modalState} onOk={onOk} onCancel={() => toggle()}>
+        <Modal
+          title="新增系列"
+          open={modalState}
+          onOk={onOk}
+          onCancel={() => {
+            toggle();
+          }}
+        >
           <Form form={form}>
             <Form.Item name="seriesName" label="系列名称" required rules={[{ required: true }]}>
               <Input />
+            </Form.Item>
+            <Form.Item name="brandId" label="品牌" required rules={[{ required: true }]}>
+              <Select options={options} />
             </Form.Item>
           </Form>
         </Modal>
